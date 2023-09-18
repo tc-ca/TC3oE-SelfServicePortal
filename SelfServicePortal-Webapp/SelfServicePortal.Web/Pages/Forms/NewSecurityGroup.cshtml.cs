@@ -27,6 +27,7 @@ public class NewSecurityGroup : PageModel
     [BindProperty]
     public string TicketId { get; set; }
     [BindProperty]
+    [DisplayFormat(ConvertEmptyStringToNull = false)]
     public string ResourceGroupName { get; set; }
 
     [BindProperty]

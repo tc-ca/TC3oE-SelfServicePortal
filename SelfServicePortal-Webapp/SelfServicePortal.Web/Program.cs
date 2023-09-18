@@ -153,6 +153,8 @@ public partial class Program {
 		// When in prod we are running behind the application gateway
 		// so we need to override the RedirectUri to point to the correct url
 		// since the app doesn't know its url when running behind the gateway
+		// NOTE - Development-Kubernetes environment DOES NOT RETURN TRUE FOR IsDevelopment
+		// this is important because we need to configure the redirect uri when running in k8s
 		if (!environment.IsDevelopment())
 		{
 			services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>

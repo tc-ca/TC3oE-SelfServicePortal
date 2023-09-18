@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssp-dep
+spec:
+  template:
+    spec:
+      containers:
+        - name: ssp-cont
+          image: myacr.azurecr.io/cloud/selfserviceportal:123
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development-Kubernetes

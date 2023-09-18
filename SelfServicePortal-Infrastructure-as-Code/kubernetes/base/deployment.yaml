@@ -4,7 +4,7 @@ metadata:
   name: ssp-dep
 spec:
   revisionHistoryLimit: 3
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app: ssp-lbl
@@ -23,7 +23,10 @@ spec:
           # image: nginx:latest
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: Development
+              # Make sure the OIDC fix is loaded
+              # app.Environment.IsDevelopment() performs exact match against "Development"
+              # we only use "Development" env for running on laptop
+              value: Development-Kubernetes
           resources:
             requests:
               cpu: 100m
