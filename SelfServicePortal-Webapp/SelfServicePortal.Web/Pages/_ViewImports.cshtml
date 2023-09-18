@@ -1,0 +1,18 @@
+﻿@using SelfServicePortal.Web.Extensions;
+@using SelfServicePortal.Core.Extensions;
+@using System.Threading.Tasks;
+@using System.Linq;
+
+@namespace SelfServicePortal.Web.Pages
+
+@* Override anchor tag helpers with our own to ensure URL culture is persisted *@
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@removeTagHelper Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, SelfServicePortal.Web
+
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@* 
+we are using MVC instead of ASPNETCORE for the IViewLocalizer
+@using Microsoft.AspNetCore.Localization
+*@

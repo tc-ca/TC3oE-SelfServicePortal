@@ -1,0 +1,9 @@
+.gitignore
+Dockerfile
+README.md
+azure-pipelines.yml
+azure-pipelines-image.yaml
+azure-pipelines-serviceconnectiontest.yml
+**/obj
+**/bin
+.vscode

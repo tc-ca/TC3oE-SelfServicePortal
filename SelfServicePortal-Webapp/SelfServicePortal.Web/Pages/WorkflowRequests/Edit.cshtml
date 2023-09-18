@@ -1,0 +1,147 @@
+@page
+@model EditModel
+@using SelfServicePortal.Core.Models
+
+@{
+	ViewData["Title"] = @Localizer["Title"];
+}
+<h1>@Model.Entry.Request.Title</h1>
+<section>
+	<h2>@Localizer["EditHeader"]</h2>
+	@{
+		if(Model.Success)
+		{
+			<div class="alert alert-success">
+				<p>@Localizer["UpdateSuccess"]</p>
+			</div>
+		}
+	}
+	<div class="wb-frmvld">
+		@{
+			var FormId = "edit-form";
+		} 
+		<form id="@FormId" method="POST" onsubmit="prepareForm()">
+            <partial name="_ValidationSummary" model="@FormId"></partial>
+
+			<div class="form-group">
+				<label asp-for="Data" class="required">
+					<span class="field-name">@Localizer["Field-Data"]</span> <strong class="required">@Localizer["Required"]</strong></label>
+				<textarea asp-for="Data" style="opacity:0" data-rule-validjson="true" required="required"></textarea>
+			</div>
+			
+			<div id="json-editor" style="height: 600px"></div>
+
+
+			@if(Model.Entry.State == WorkflowState.PendingApproval)
+			{
+				<button class="btn btn-primary mrgn-tp-sm" type="submit">@Localizer["Submit"]</button>
+			} else {
+				<button class="btn btn-primary mrgn-tp-sm" disabled>@Localizer["SubmitUnavailable"]</button>
+			}
+		</form>
+	</div>
+</section>
+
+<section>
+	<h2>@Localizer["LogsHeader"]</h2>
+	<div id="logs-editor" style="height: 600px"></div>
+</section>
+
+
+
+<template id="logs">
+	<div>
+		@foreach (var x in Model.LogEntries.Table.Rows)
+		{
+			var timestamp = x[0];
+			var severity = @x[1] switch {
+				0 => "DEBUG",
+				1 => "INFO",
+				2 => "WARNING",
+				3 => "ERROR",
+				_ => "WHAT",
+			};
+			var message = @x[2];
+			<span>@timestamp @severity @message</span>
+		}
+	</div>
+</template>
+
+@section AppTop
+{
+	<script>
+		appTop.breadcrumbs.push({
+			title: "@Localizer["PreviousPage"]",
+			href: "@Url.PageSameCulture("/WorkflowRequests/List")",
+		})
+	</script>
+}
+
+
+@section Scripts {
+	<link
+		rel="stylesheet"
+		data-name="/ssp-pls/monaco/vs/editor/editor.main"
+		href="/ssp-pls/monaco/vs/editor/editor.main.css"
+	/>
+	<script>
+		var require = { paths: { vs: '/ssp-pls/monaco/vs' } };
+	</script>
+	<script src="/ssp-pls/monaco/vs/loader.js"></script>
+	<script src="/ssp-pls/monaco/vs/editor/editor.main.nls.js"></script>
+	<script src="/ssp-pls/monaco/vs/editor/editor.main.js"></script>
+
+	<script defer="defer">
+		// Grab content from template and convert UTC dates to local time
+		const logData = document.getElementById("logs").content.querySelector("div").innerText.replaceAll(/^\d+\/\d+\/\d+ \d+\:\d+\:\d+ \w+ \+00\:00/gm, function(match) { return new Date(match).toLocaleString("en-CA") }).trim();
+		const jsonData = document.getElementById("Data");
+
+		// Mount monaco editor
+		let logEditor = monaco.editor.create(document.getElementById('logs-editor'), {
+			value: logData,
+			language: 'sb',
+			theme: "vs-dark",
+			readOnly: true,
+		});
+		// Scroll to bottom of logs
+		logEditor.revealLine(logEditor.getModel().getLineCount());
+		
+		let jsonEditor = monaco.editor.create(document.getElementById('json-editor'), {
+			value: jsonData.value,
+			language: 'json',
+			theme: "vs-dark",
+			readOnly: @(Model.Entry.State != WorkflowState.PendingApproval ? "true" : "false"),
+		});
+
+		// Ensure responsive to window resizing
+		window.onresize = function () {
+			logEditor.layout();
+			jsonEditor.layout();
+		};
+
+		// copy values from monaco on submit
+		function prepareForm(event) {
+			jsonData.value = jsonEditor.getValue();
+		}
+
+
+		$( document ).on( "wb-ready.wb-frmvld", function( event ) {
+			// add json validation
+			function isValidJson(str) {
+				try {
+					JSON.parse(str);
+				} catch (e) {
+					return false;
+				}
+				return true;
+			}
+			jQuery.validator.addMethod("validjson", function(value, element) {
+				return this.optional(element) || isValidJson(value);
+			}, "Must be valid json");
+
+		});
+	
+		// prevent WET from thinking it can use the loader provided by Monaco
+		delete window.define.amd;
+	</script>
+}

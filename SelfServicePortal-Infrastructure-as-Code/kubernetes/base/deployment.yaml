@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssp-dep
+spec:
+  revisionHistoryLimit: 3
+  replicas: 0
+  selector:
+    matchLabels:
+      app: ssp-lbl
+  template:
+    metadata:
+      labels:
+        app: ssp-lbl
+        azure.workload.identity/use: "true"
+    spec:
+      serviceAccountName: my-workload-identity-selfserviceportal-service-account
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: ssp-cont
+          image: myacr.azurecr.io/cloud/selfserviceportal:123
+          # image: nginx:latest
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 8000
+          securityContext: # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+                - NET_RAW
+            seLinuxOptions:
+              type: container_t
+            seccompProfile:
+              type: RuntimeDefault

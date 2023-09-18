@@ -1,0 +1,86 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = @Localizer["Title"];
+}
+
+<section>
+    @* <div class="alert alert-warning">
+        <p>@Localizer["Banner-Warning"]</p>
+    </div> *@
+    <h1>@Localizer["Header-Welcome"]</h1>
+    <p>@Localizer["Welcome", User.GetName()]</p>
+    @{
+        if (Model.IsAdmin)
+        {
+            <p>@Localizer["Welcome-Admin"]</p>
+        }
+    }
+    <section>
+        <h2>@Localizer["Header-Detailed"]</h1>
+        @Localizer["Content-Detailed"]
+    </section>
+    <section>
+        <h2>@Localizer["Header-Self"]</h1>
+        @Localizer["Content-Self"]
+        <table class="table table-striped">
+            <caption>
+                @Localizer["Title-Table"]
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">@Localizer["Label-Form-Name"]</th>
+                    <th scope="col">@Localizer["Label-Form-Link"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Localizer["Form-Label-NewResourceGroup"]</td>
+                    <td><a asp-page="/Forms/NewResourceGroup">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-NewSecurityGroup"]</td>
+                    <td><a asp-page="/Forms/NewSecurityGroup">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-AddGroupOwners"]</td>
+                    <td><a asp-page="/Forms/AddGroupOwners">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-AddAccountExemption"]</td>
+                    <td><a asp-page="/Forms/AddAccountInactivityPolicyExemption">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-AddApplicationDeveloperRole"]</td>
+                    <td><a asp-page="/Forms/AddApplicationDeveloperRole">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-AddVMShutdownExemption"]</td>
+                    <td><a asp-page="/Forms/AddVMShutdownExemption">@Localizer["Link"]</a></td>
+                </tr>
+                <tr>
+                    <td>@Localizer["Form-Label-NewServiceConnection"]</td>
+                    <td><a asp-page="/Forms/NewServiceConnection">@Localizer["Link"]</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <a asp-page="/WorkflowRequests/ListMine">@Localizer["Link-History"]</a>
+        @if (Model.IsAdmin)
+        {
+            <br/>
+            <a asp-page="/WorkflowRequests/List">@Localizer["Link-History-Admin"]</a>
+            <br/>
+            <a asp-page="/Approvals/List">@Localizer["Link-Approvals"]</a>
+            <br/>
+            <a asp-page="/Logs">@Localizer["Link-Logs"]</a>
+            <br/>
+            <a asp-page="/Forms/JsonForm">@Localizer["Link-Json"]</a>
+        }
+        @if (Model.IsDev)
+        {
+            <br/>
+            <a asp-page="/Test">Test</a>
+        }
+    </section>
+</section>

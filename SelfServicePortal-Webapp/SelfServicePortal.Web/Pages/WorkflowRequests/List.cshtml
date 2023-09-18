@@ -1,0 +1,91 @@
+@page
+@model ListModel
+
+@{
+	ViewData["ContainerClass"] = "mrgn-lft-lg mrgn-rght-lg";
+	ViewData["Title"] = @Localizer["History"];
+}
+<style>
+	table {
+		table-layout: fixed;
+	}
+</style>
+<section>
+	<h1>@Localizer["Header"]</h1>
+	<table class="table table-striped">
+		<colgroup>
+			<col span="1" style="width:20%">
+			<col span="1" style="width:20%">
+			<col span="1" style="width:45%">
+			<col span="1" style="width:15%">
+		</colgroup>
+		<thead>
+			<tr>
+				<th scope="col">@Localizer["Field-Date"]</th>
+				<th scope="col">@Localizer["Field-Submitter"]</th>
+				<th scope="col">@Localizer["Field-Name"]</th>
+				<th scope="col">@Localizer["Field-State"]</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var workflowRequest in Model.Requests)
+			{
+				<tr>
+					<td>@workflowRequest.Request.DateInitiated</td>
+					<td class="clip">@workflowRequest.Request.Initiator</td>
+					<td><a asp-page="/WorkflowRequests/Edit" asp-route-Initiator="@workflowRequest.Initiator"
+						asp-route-Timestamp="@workflowRequest.RowKey">@workflowRequest.Request.Title</a></td>
+					@if (@workflowRequest.State != "PendingApproval")
+					{
+						<td>@workflowRequest.State</td>
+					}
+					else
+					{
+						<td><button class="approve-button btn btn-warning" type="button"
+						data-workflow-partition-key="@workflowRequest.PartitionKey"
+						data-workflow-row-key="@workflowRequest.RowKey"
+						data-workflow-title="@workflowRequest.Request.Title"
+						data-workflow-initiator="@workflowRequest.Initiator">@workflowRequest.State</button></td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+</section>
+<style>
+	.clip {
+		max-width: 100px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+</style>
+
+@section Scripts
+{
+<script>
+	let confirmString = `@Localizer["Dialog-ConfirmApproval"]`;
+	window.addEventListener("load", () => {
+		document.querySelectorAll(".approve-button").forEach(btn => {
+			btn.addEventListener("click", e => {
+				const partitionKey = e.target.getAttribute("data-workflow-partition-key");
+				const rowKey = e.target.getAttribute("data-workflow-row-key");
+				const title = e.target.getAttribute("data-workflow-title");
+				const initiator = e.target.getAttribute("data-workflow-initiator");
+				if (confirm(confirmString.replace("%s", title).replace("%s", initiator))) {
+					const formData = new FormData();
+					formData.append('partitionKey', partitionKey);
+					formData.append('rowKey', rowKey);
+					fetch(`${window.location}?handler=Resubmit`, {
+						method: "POST",
+						headers: {
+							RequestVerificationToken: `@Model.AntiForgeryToken.RequestToken`,
+						},
+						body: formData,
+					});
+				}
+			});
+		});
+	});
+</script>
+}

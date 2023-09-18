@@ -1,0 +1,10 @@
+@page
+@model SuccessModel
+
+@{
+	ViewData["Title"] = @Localizer["Header"];
+}
+
+<meta http-equiv="refresh" content="5; URL='@Url.PageSameCulture("/Index")'" />
+<h1>@Localizer["Header"]</h1>
+<p><a asp-page="/Index">@Localizer["RedirectNotice"]</a></p>

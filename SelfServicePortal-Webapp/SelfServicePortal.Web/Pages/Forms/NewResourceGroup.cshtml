@@ -1,0 +1,591 @@
+﻿@page
+@model NewResourceGroup
+
+@{
+    ViewData["Title"] = @Localizer["Header"];
+}
+
+<h1>@Localizer["Header"]</h1>
+<p>@Localizer["Label-PreparationItems"]</p>
+<section>
+    <div class="wb-frmvld">
+        @{
+            var FormId = "resource-group-form";
+        }
+        <form id="@FormId" method="POST" asp-page-handler="OnPost">
+            @* @Html.ValidationSummary() *@
+            @* <div asp-validation-summary="All" class="alert alert-danger"></div> *@
+            <partial name="_ValidationSummary" model="FormId"></partial>
+            <div class="form-group">
+                <label asp-for="TicketId" class="required">
+                    <span class="field-name">@Localizer["Field-TicketId"] </span>
+                    <strong class="required">@Localizer["Required"]</strong>
+                </label>
+                <input asp-for="TicketId" class="form-control" size="30" />
+                <partial name="_ValidTicketNumber"></partial>
+            </div>
+            <fieldset>
+                <legend>@Localizer["Heading-Creation"]</legend>
+                <div id="input-sub" class="form-group">
+                    <label asp-for="SubscriptionName" class="required"><span
+                            class="field-name">@Localizer["Field-SubscriptionId"]</span> <strong
+                            class="required">@Localizer["Required"]</strong></label>
+                    <select asp-for="SubscriptionName" class="form-control" required="required">
+                        @foreach (var sub in Model.Subscriptions)
+                        {
+                            <option value="@sub.Data.DisplayName" data-naming-prefix="@sub.GetNamingPrefix()">
+                                @sub.Data.DisplayName
+                            </option>
+                        }
+                    </select>
+                    <p>@Localizer["ScedReminder"]</p>
+                </div>
+                <div id="input-location" class="form-group">
+                    <label asp-for="LocationName" class="required"><span
+                            class="field-name">@Localizer["Field-LocationName"]</span> <strong
+                            class="required">@Localizer["Required"]</strong></label>
+                    <select asp-for="LocationName" class="form-control" required="required">
+                        @foreach (var location in Model.ValidLocations)
+                        {
+                            <option value="@location.Name" data-naming-prefix="@location.GetNamingPrefix()">
+                                @location.DisplayName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                @* ToDo: move prefix to before the input *@
+                <div id="input-name" class="form-group">
+                    <label asp-for="ResourceGroupName" class="required"><span
+                            class="field-name">@Localizer["Field-ResourceGroupName"]</span> <strong
+                            class="required">@Localizer["Required"]</strong></label>
+                    <input asp-for="ResourceGroupName" class="form-control" required="required">
+                    <p style="display:none" id="rg-name-preview">@Localizer["Field-ResourceGroupName-Preview","%"]</p>
+                </div>
+
+                <div class="form-group">
+                    <table class="table">
+                        <caption>@Localizer["Field-TagCaption"]</caption>
+                        <thead>
+                            <tr>
+                                <th>@Localizer["Field-TagName"]</th>
+                                <th>@Localizer["Field-TagValue"]</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tag-table-body">
+                            @{
+                                string TagName;
+                                string[] TagValues;
+                            }
+                            <tr>
+                                @{
+                                    TagName = "Business-Unit";
+                                    TagValues = new[] {
+                                                        "Unit1",
+                                                        "Unit2",
+                                                        "Unit3",
+                                                        };
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input list="list-@TagName" asp-for="ResourceGroupTags[TagName]"
+                                        class="form-control" required="required" type="text">
+                                    <datalist id="list-@TagName">
+                                        @foreach (var Value in TagValues)
+                                        {
+                                            <option value="@Value">@Value</option>
+                                        }
+                                    </datalist>
+                                    <p>@Localizer["CustomValueAllowed"]</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Business-Value";
+                                    TagValues = new[] {
+                                                        "Developer Supporting",
+                                                        "Business Critical",
+                                                        "Business Supporting",
+                                                        "Operations Supporting",
+                                                        };
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <select asp-for="ResourceGroupTags[TagName]" class="form-control"
+                                        required="required">
+                                        @foreach (var Value in TagValues)
+                                        {
+                                            <option value="@Value">@Value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Environment";
+                                    TagValues = new[] {
+                                                        "Development",
+                                                        "Acceptance",
+                                                        "Production",
+                                                        "Testing",
+                                                        "Other",
+                                                        };
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <select asp-for="ResourceGroupTags[TagName]" class="form-control"
+                                        required="required">
+                                        @foreach (var Value in TagValues)
+                                        {
+                                            <option value="@Value">@Value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Sensitivity";
+                                    TagValues = new[] {
+                                                        "Unclassified",
+                                                        "Protected A",
+                                                        "Protected B",
+                                                        };
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <select asp-for="ResourceGroupTags[TagName]" class="form-control"
+                                        required="required">
+                                        @foreach (var Value in TagValues)
+                                        {
+                                            <option value="@Value">@Value</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Project-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Solution-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "RC-Manager-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "RC-Manager-Email";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr> 
+                            <tr>
+                                @{
+                                    TagName = "Tech-Contact-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Tech-Contact-Email";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Tech-Owner-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Tech-Owner-Email";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" required="required"
+                                        type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Cost-Center-Code";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                        
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" type="text">
+                                    <p><span>@Localizer["Field-CostCenterCodeFormat"] <a href="@Localizer["Field-CostCenterCodeLink"]">@Localizer["Field-CostCenterCodeLinkText"]</a></span></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                @{
+                                    TagName = "Cost-Center-Name";
+                                }
+                                <td>
+                                    <label asp-for="ResourceGroupTags[TagName]" class="required">
+                                        <span class="field-name">@TagName</span>
+                                        <strong class="required">@Localizer["Required"]</strong>
+                                    </label>
+                                </td>
+                                <td>
+                                    <input asp-for="ResourceGroupTags[TagName]" class="form-control" type="text">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button id="add-row" type="button" class="btn btn-secondary">@Localizer["Button-AddRow"]</button>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>@Localizer["Heading-Permissions"]</legend>
+                <div id="should-assign" class="checkbox">
+                    <input asp-for="ShouldAssignSecurityGroup" type="checkbox">
+                    <label asp-for="ShouldAssignSecurityGroup">
+                        @Localizer["Field-ShouldAssignSecurityGroup"]
+                    </label>
+                </div>
+                <div id="section-secgroup" style="margin-left:20px;">
+                    <div id="sec-exists" class="checkbox">
+                        <input asp-for="SecurityGroupExists" type="checkbox">
+                        <label asp-for="SecurityGroupExists">
+                            @Localizer["Field-SecurityGroupExists"]
+                        </label>
+                    </div>
+                    <div id="section-secgroup-existing" style="margin-left:20px;">
+                        <div class="form-group">
+                            <label asp-for="ExistingSecurityGroupName" class="required">
+                                <span class="field-name">@Localizer["Field-ExistingSecurityGroupName"]</span>
+                                <strong class="required">@Localizer["Required"]</strong>
+                            </label>
+                            <input asp-for="ExistingSecurityGroupName" class="form-control" required="required">
+                        </div>
+                    </div>
+                    <div id="section-secgroup-new" style="margin-left:20px;">
+                        <div class="form-group">
+                            <label asp-for="NewSecurityGroupName" class="required">
+                                <span class="field-name">@Localizer["Field-NewSecurityGroupName"]</span>
+                                <strong class="required">@Localizer["Required"]</strong>
+                            </label>
+                            <input asp-for="NewSecurityGroupName" class="form-control" required="required">
+                            <p style="display:none" id="sec-name-preview">
+                                @Localizer["Field-NewSecurityGroupName-Preview","%"]</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SecurityGroupOwners">@Localizer["Field-SecurityGroupOwners"]</label>
+                            <textarea asp-for="SecurityGroupOwners" class="form-control"></textarea>
+                            <button class="btn-addself mrgn-tp-sm btn btn-secondary"
+                                type="button">@Localizer["Button-AddSelf"]</button>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SecurityGroupMembers">@Localizer["Field-SecurityGroupMembers"]</label>
+                            <textarea asp-for="SecurityGroupMembers" class="form-control"></textarea>
+                            <button class="btn-addself mrgn-tp-sm btn btn-secondary"
+                                type="button">@Localizer["Button-AddSelf"]</button>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <div id="should-create-service-connection" class="checkbox">
+                    <input asp-for="ShouldCreateServiceConnection" type="checkbox">
+                    <label asp-for="ShouldCreateServiceConnection">
+                        @Localizer["Field-ShouldCreateServiceConnection"]
+                    </label>
+                </div>
+                <div id="service-connection-details">
+                    <div class="form-group">
+                        <label asp-for="ServiceConnectionProjectId" class="required"><span
+                                class="field-name">@Localizer["Field-ServiceConnectionProjectId"]</span> <strong
+                                class="required">@Localizer["Required"]</strong></label>
+                        <select asp-for="ServiceConnectionProjectId" class="form-control selectProj"
+                            required="required">
+                            <option style="display:none"></option>
+                            <optgroup label="@Localizer["MyProjects"]">
+                                @foreach (var project in Model.Projects.Where(x => x.IsAdmin))
+                                {
+                                    <option value="@project.projectRef.id">
+                                        @project.projectRef.name
+                                    </option>
+                                }
+                            </optgroup>
+                            <optgroup label="@Localizer["OtherProjects"]">
+                                @foreach (var project in Model.Projects.Where(x => !x.IsAdmin))
+                                {
+                                    <option value="@project.projectRef.id">
+                                        @project.projectRef.name
+                                    </option>
+                                }
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ServiceConnectionName">
+                            <span class="field-name">@Localizer["Field-ServiceConnectionName"]</span>
+                        </label>
+                        <input asp-for="ServiceConnectionName" class="form-control">
+                    </div>
+                </div>
+                 <div id="should-cost-recovery" class="checkbox">
+                    <label asp-for="ShouldCostRecovery" class="required">
+                        <input asp-for="ShouldCostRecovery" type="checkbox" required="required">
+                        @Localizer["Field-ShouldCostRecovery"] <strong class="required">@Localizer["Required"]</strong>
+                    </label>
+                </div>
+                 <div id="require-ATO-for-product" class="text">
+                    <label for="require-ATO-for-product">
+                        @Localizer["Label-RequireATOForProduct"]
+                    </label>
+                </div>
+           </fieldset>
+            <partial name="_SubmitButton" model="FormId"></partial>
+        </form>
+        <template id="template-tag">
+            <tr>
+                <td>
+                    <label>
+                        <span class="field-name">
+                            <input class="input-tag-name form-control">
+                        </span>
+                    </label>
+                </td>
+                <td>
+                    <input class="input-tag-value form-control">
+                </td>
+            </tr>
+        </template>
+    </div>
+</section>
+
+
+@section Scripts {
+<script>
+    window.addEventListener("load", () => {
+        { // Set up resource group name preview
+            const subscriptionInput = document.querySelector("#input-sub > select");
+            const locationInput = document.querySelector("#input-location > select");
+            const nameInput = document.querySelector("#input-name > input");
+            const namePreview = document.querySelector("#rg-name-preview");
+            const namePreviewText = namePreview.innerText;
+
+            function updatePreview() {
+                const subscriptionName = subscriptionInput.options[subscriptionInput.selectedIndex].attributes["data-naming-prefix"].value;
+                const locationName = locationInput.options[locationInput.selectedIndex].attributes["data-naming-prefix"].value;
+                const groupName = nameInput.value;
+                const previewName = `${subscriptionName}-${locationName}-${groupName}-RGP`;
+                namePreview.style.display = null;
+                namePreview.innerText = namePreviewText.replace("%", previewName);
+            }
+
+            nameInput.addEventListener("input", updatePreview);
+            subscriptionInput.addEventListener("change", updatePreview);
+            locationInput.addEventListener("change", updatePreview);
+        }
+        {// set up tag table row appender
+            const template = document.getElementById("template-tag");
+            const btn = document.getElementById("add-row");
+            const table = document.getElementById("tag-table-body");
+            let count = 0;
+            function addRow() {
+                const tr = template.content.firstElementChild.cloneNode(true);
+                const nameSpan = tr.querySelector("span");
+                const tagNameInput = tr.querySelector(".input-tag-name");
+                const tagValueInput = tr.querySelector(".input-tag-value");
+
+                // update id and name to make dotnet model binding work
+                function updateModelBinding() {
+                    const tagName = tagNameInput.value;
+                    tagValueInput.id = `ResourceGroupTags_${tagName}_`;
+                    tagValueInput.name = `ResourceGroupTags[${tagName}]`;
+                    tr.querySelector("label").htmlFor = tagValueInput.id;
+                }
+
+                // set default value
+                tagNameInput.value = `Custom-Tag-${count}`;
+                updateModelBinding();
+
+                // listen for changes
+                tagNameInput.addEventListener("input", updateModelBinding);
+
+                // add the row
+                table.appendChild(tr);
+
+                count++;
+            }
+            btn.addEventListener("click", addRow);
+        }
+        {// set up show/hide security group
+            const shouldAssignCheckbox = document.querySelector("#should-assign input");
+            const section = document.getElementById("section-secgroup");
+            function updateVisibility() {
+                section.style.display = shouldAssignCheckbox.checked ? null : "none";
+            }
+            updateVisibility();
+            shouldAssignCheckbox.addEventListener("change", updateVisibility);
+        }
+        {// set up existing/new security group
+            const existsCheckbox = document.querySelector("#sec-exists input");
+            const sectionExisting = document.getElementById("section-secgroup-existing");
+            const sectionNew = document.getElementById("section-secgroup-new");
+            function updateVisibility() {
+                if (existsCheckbox.checked) {
+                    sectionExisting.style.display = null;
+                    sectionNew.style.display = "none";
+                } else {
+                    sectionExisting.style.display = "none";
+                    sectionNew.style.display = null;
+                }
+            }
+            updateVisibility();
+            existsCheckbox.addEventListener("change", updateVisibility);
+        }
+        {// set up security group name preview
+            const nameInput = document.querySelector("#section-secgroup-new input");
+            const preview = document.querySelector("#sec-name-preview");
+            const template = preview.innerText;
+            function updatePreview() {
+                preview.style.display = null;
+                preview.innerText = template.replace("%", `MyOrg-${nameInput.value}`);
+            }
+            nameInput.addEventListener("input", updatePreview);
+        }
+        {// set up "add self" button
+            document.querySelectorAll(".btn-addself").forEach(function (btn) {
+                btn.addEventListener("click", function (e) {
+                    const input = btn.parentElement.querySelector("textarea");
+                    const myEmail = "@User.GetName()";
+                    if (input.value.indexOf(myEmail) !== -1) return;
+                    if (input.value.match(/^\s*$/)) {
+                        input.value = myEmail
+                    } else {
+                        input.value += "\n" + myEmail;
+                    }
+                });
+            });
+        }
+        {// set up service connection name show/hide
+            const checkbox = document.querySelector("#should-create-service-connection input");
+            const section = document.getElementById("service-connection-details");
+            function updateVisibility() {
+                section.style.display = checkbox.checked ? null : "none";
+            }
+            updateVisibility();
+            checkbox.addEventListener("change", updateVisibility);
+        }
+        {// set up ATO label show/hide based on Prod environment
+            const EnvironmentSelector = document.querySelector("#ResourceGroupTags_Environment_");
+            const section = document.getElementById("require-ATO-for-product");
+            const subscriptionInput = document.querySelector("#input-sub > select");
+
+            function updateVisibilityATO() {
+                ProdEnvironment = EnvironmentSelector.options[EnvironmentSelector.selectedIndex].value;
+                const subscriptionName = subscriptionInput.options[subscriptionInput.selectedIndex].attributes["data-naming-prefix"].value;
+                section.style.display = ((ProdEnvironment == 'Production') || subscriptionName.toLowerCase().includes('prod'))? null : "none";
+            }
+            updateVisibilityATO();
+            EnvironmentSelector.addEventListener("change", updateVisibilityATO);
+            subscriptionInput.addEventListener("change", updateVisibilityATO);
+        }
+    });
+</script>
+}

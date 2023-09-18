@@ -1,0 +1,28 @@
+@model string
+@{
+	var modelState = Html.ViewData.ModelState!;
+	var errors = modelState.SelectMany(x => x.Value!.Errors);
+	var i = 1;
+}
+@if (errors.Any())
+{
+	<section id="errors-@Model" class="alert alert-danger" @(Html.ViewData.ModelState.IsValid ? "hidden" : "")>
+		<h2 id="errors">@Localizer["Header", errors.Count()]</h2>
+		<ul id="error-list" role="list">
+			@foreach (var key in Html.ViewData.ModelState.Keys)
+			{
+				if (modelState[key]!.Errors.Any())
+				{
+					foreach (var modelError in modelState[key]!.Errors)
+					{
+						<li>
+							<a href="#@key.Replace("[", "_").Replace("]", "_").Replace(".", "_")">
+								@Localizer["Error"] @(i++) : @Html.Raw(modelError.ErrorMessage)
+							</a>
+						</li>
+					}
+				}
+			}
+		</ul>
+	</section>
+}

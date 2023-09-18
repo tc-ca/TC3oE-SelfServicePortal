@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Submit" xml:space="preserve">
+    <value>Submit</value>
+    <comment/>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>(required)</value>
+    <comment/>
+  </data>
+  <data name="Field-TicketId" xml:space="preserve">
+    <value>Ticket ID</value>
+    <comment/>
+  </data>
+  <data name="Field-SubscriptionId" xml:space="preserve">
+    <value>Subscription</value>
+    <comment/>
+  </data>
+  <data name="Field-ResourceGroupName" xml:space="preserve">
+    <value>Resource group name</value>
+    <comment/>
+  </data>
+  <data name="Field-ResourceGroupName-Preview" xml:space="preserve">
+    <value>Will be created as "{0}".</value>
+    <comment/>
+  </data>
+  <data name="Field-LocationName" xml:space="preserve">
+    <value>Location</value>
+    <comment/>
+  </data>
+  <data name="Header" xml:space="preserve">
+    <value>Request a resource group</value>
+    <comment/>
+  </data>
+  <data name="Field-TagName" xml:space="preserve">
+    <value>Tag name</value>
+    <comment/>
+  </data>
+  <data name="Field-TagValue" xml:space="preserve">
+    <value>Tag value</value>
+    <comment/>
+  </data>
+  <data name="Field-TagCaption" xml:space="preserve">
+    <value>Resource group tags</value>
+    <comment/>
+  </data>
+  <data name="Heading-Creation" xml:space="preserve">
+    <value>Creation information</value>
+    <comment/>
+  </data>
+  <data name="Heading-Permissions" xml:space="preserve">
+    <value>Permission information</value>
+    <comment/>
+  </data>
+  <data name="Field-SecurityGroupExists" xml:space="preserve">
+    <value>Security group already exists</value>
+    <comment/>
+  </data>
+  <data name="Button-AddRow" xml:space="preserve">
+    <value>Add custom tag</value>
+    <comment/>
+  </data>
+  <data name="Field-ShouldAssignSecurityGroup" xml:space="preserve">
+    <value>Assign security group</value>
+    <comment/>
+  </data>
+  <data name="Field-ExistingSecurityGroupName" xml:space="preserve">
+    <value>Name of existing security group</value>
+    <comment/>
+  </data>
+  <data name="Field-NewSecurityGroupName" xml:space="preserve">
+    <value>Name of security group to be created</value>
+    <comment/>
+  </data>
+  <data name="Field-NewSecurityGroupName-Preview" xml:space="preserve">
+    <value>Will be created as "{0}".</value>
+    <comment/>
+  </data>
+  <data name="Field-SecurityGroupOwners" xml:space="preserve">
+    <value>Security group owners' emails (separated with newlines, commas, spaces, or semicolons)</value>
+    <comment/>
+  </data>
+  <data name="Field-SecurityGroupMembers" xml:space="preserve">
+    <value>Security group members' emails (separated with newlines, commas, spaces, or semicolons)</value>
+    <comment/>
+  </data>
+  <data name="Button-AddSelf" xml:space="preserve">
+    <value>Add Myself</value>
+    <comment/>
+  </data>
+  <data name="ScedReminder" xml:space="preserve">
+    <value>Please prioritize SCED subscriptions for new applications</value>
+    <comment/>
+  </data>
+  <data name="Field-ShouldCreateServiceConnection" xml:space="preserve">
+    <value>Create service connection</value>
+    <comment/>
+  </data>
+  <data name="Field-ServiceConnectionName" xml:space="preserve">
+    <value>Service connection name</value>
+    <comment/>
+  </data>
+  <data name="Field-ServiceConnectionProjectId" xml:space="preserve">
+    <value>DevOps project</value>
+    <comment/>
+  </data>
+  <data name="MyProjects" xml:space="preserve">
+    <value>My projects</value>
+    <comment/>
+  </data>
+  <data name="OtherProjects" xml:space="preserve">
+    <value>Other projects</value>
+    <comment/>
+  </data>
+  <data name="ProjectNotFound" xml:space="preserve">
+    <value>Project not found</value>
+    <comment/>
+  </data>
+  <data name="CustomValueAllowed" xml:space="preserve">
+    <value>You can enter a custom value if none of the suggestions are accurate.</value>
+    <comment/>
+  </data>
+  <data name="Field-CostCenterCodeFormat" xml:space="preserve">
+    <value>Please use this format: Region code – Group – RC – PI – OOC or capital – Project Code – Location Code – Department&lt;br /&gt;Coding Wizard : </value>
+    <comment/>
+  </data>
+  <data name="Field-CostCenterCodeLinkText" xml:space="preserve">
+    <value>example</value>
+    <comment/>
+  </data>
+  <data name="Field-CostCenterCodeLink" xml:space="preserve">
+    <value>http://example.com</value>
+    <comment/>
+  </data>
+  <data name="Field-ShouldCostRecovery" xml:space="preserve">
+    <value>In order to provide sustainable Cloud Services, the cloud team needs to recover the costs consumed by cloud projects. By checking this box, I am confirming that I have the RC manager’s approval/confirmation that Cloud consumption associated with this resource group will be cost recovered from the RC. Please note that, additionally, the cloud team may ask for contribution to pay for the operational cost of running the environment (to be determined).</value>
+    <comment/>
+  </data>
+  <data name="Label-RequireATOForProduct" xml:space="preserve">
+    <value>Please send a copy of your fully signed iATO/ATO to myteam@org.gc.ca.  If you need assistance with getting an iATO/ATO, please contact otherteam@org.gc.ca. Your request will be on hold until we can review it and confirm.</value>
+    <comment/>
+  </data>
+  <data name="Label-PreparationItems" xml:space="preserve">
+    <value>To complete this request, you will need: &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;1.Valid Orion ticket number &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;2.RC code and approval &lt;br /&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;3.For production, iATO/ATO</value>
+    <comment/>
+  </data>
+</root>

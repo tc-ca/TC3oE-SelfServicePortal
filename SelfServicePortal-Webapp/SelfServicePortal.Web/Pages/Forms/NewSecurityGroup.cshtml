@@ -1,0 +1,129 @@
+﻿@page
+@model NewSecurityGroup
+
+@{
+    ViewData["Title"] = @Localizer["Header"];
+}
+
+<h1>@Localizer["Header"]</h1>
+<p>@Localizer["Label-PreparationItems"]</p>
+<section>
+    <div class="wb-frmvld">
+        @{
+            var FormId = "resource-group-form";
+        }
+        <form id="@FormId" method="POST" asp-page-handler="OnPost">
+            @* @Html.ValidationSummary() *@
+            @* <div asp-validation-summary="All" class="alert alert-danger"></div> *@
+            <partial name="_ValidationSummary" model="FormId"></partial>
+            <div class="form-group">
+                <label asp-for="TicketId" class="required">
+                    <span class="field-name">@Localizer["Field-TicketId"] </span>
+                    <strong class="required">@Localizer["Required"]</strong>
+                </label>
+                <input asp-for="TicketId" class="form-control" size="30" />
+                <partial name="_ValidTicketNumber"></partial>
+            </div>
+            <fieldset>
+                <legend>@Localizer["Heading-Creation"]</legend>
+                <div id="section-secgroup">
+                    <div id="section-secgroup-new">
+                        <div class="form-group">
+                            <label asp-for="NewSecurityGroupName" class="required">
+                                <span class="field-name">@Localizer["Field-NewSecurityGroupName"]</span>
+                                <strong class="required">@Localizer["Required"]</strong>
+                            </label>
+                            <input asp-for="NewSecurityGroupName" class="form-control" required="required">
+                            <p style="display:none" id="sec-name-preview">
+                                @Localizer["Field-NewSecurityGroupName-Preview","%"]</p>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SecurityGroupOwners" class="required">
+                                <span class="field-name"></span>@Localizer["Field-SecurityGroupOwners"]</span>
+                                <strong class="required">@Localizer["Required"]</strong>
+                            </label>
+                            <textarea asp-for="SecurityGroupOwners" class="form-control"></textarea>
+                            <button class="btn-addself mrgn-tp-sm btn btn-secondary"
+                                type="button">@Localizer["Button-AddSelf"]</button>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SecurityGroupMembers">@Localizer["Field-SecurityGroupMembers"]</label>
+                            <textarea asp-for="SecurityGroupMembers" class="form-control"></textarea>
+                            <button class="btn-addself mrgn-tp-sm btn btn-secondary"
+                                type="button">@Localizer["Button-AddSelf"]</button>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ResourceGroupName">@Localizer["Field-ResourceGroupName"]</label>
+                            <small>@Localizer["Tip-ResourceGroupName"]</small>
+                            <input asp-for="ResourceGroupName" class="form-control" size="80"></input>
+                            @{
+                                string[][] nestedRoles = new string[2][];
+                                nestedRoles[0] = new string[] {"Contributor", "Contributeur"};
+                                nestedRoles[1] = new string[] {"Reader", "Lecteur"};
+                                string currentCulture = this.HttpContext.Request.GetCulture();
+                            }
+                            <label asp-for="SecurityGroupRole">@Localizer["Field-SecurityGroupRole"]</label>
+                            <select asp-for="SecurityGroupRole" class="form-control">
+                                @for (int i = 0; i < nestedRoles.Length; i++)
+                                {
+                                    string value1 = nestedRoles[i][0];
+                                    if (currentCulture == "fr") 
+                                        value1 = nestedRoles[i][1];
+                                    <option value="@nestedRoles[i][0]">@value1</option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <partial name="_SubmitButton" model="FormId"></partial>
+        </form>
+        <template id="template-tag">
+            <tr>
+                <td>
+                    <label>
+                        <span class="field-name">
+                            <input class="input-tag-name form-control">
+                        </span>
+                    </label>
+                </td>
+                <td>
+                    <input class="input-tag-value form-control">
+                </td>
+            </tr>
+        </template>
+    </div>
+</section>
+
+
+@section Scripts {
+<script>
+    window.addEventListener("load", () => {
+        {// set up security group name preview
+            const nameInput = document.querySelector("#section-secgroup-new input");
+            const preview = document.querySelector("#sec-name-preview");
+            const template = preview.innerText;
+            function updatePreview() {
+                preview.style.display = null;
+                preview.innerText = template.replace("%", `MyOrg-${nameInput.value}`);
+            }
+            nameInput.addEventListener("input", updatePreview);
+        }
+        {// set up "add self" button
+            document.querySelectorAll(".btn-addself").forEach(function (btn) {
+                btn.addEventListener("click", function (e) {
+                    const input = btn.parentElement.querySelector("textarea");
+                    const myEmail = "@User.GetName()";
+                    if (input.value.indexOf(myEmail) !== -1) return;
+                    if (input.value.match(/^\s*$/)) {
+                        input.value = myEmail
+                    } else {
+                        input.value += "\n" + myEmail;
+                    }
+                });
+            });
+        }
+    });
+</script>
+}

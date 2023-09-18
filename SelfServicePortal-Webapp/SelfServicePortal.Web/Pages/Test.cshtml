@@ -1,0 +1,14 @@
+@page
+@model Test
+
+@{
+	ViewData["Title"] = "Test";
+}
+
+<form method="POST">
+	<div>
+		<span>Is admin: @User.IsInRole(Auth.AppRoles.Admin)</span>
+	</div>
+	<textarea class="form-control" required="required" asp-for="MyInput"></textarea>
+	<button class="btn btn-primary" type="submit">Submit</button>
+</form>

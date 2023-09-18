@@ -1,0 +1,66 @@
+@page
+@model LogsModel
+
+@{
+	ViewData["ContainerClass"] = "mrgn-lft-lg mrgn-rght-lg";
+	ViewData["Title"] = @Localizer["Header"];
+}
+
+
+<section>
+	<h1>@Localizer["Header"]</h1>
+	<div id="editor" style="height: 600px"></div>
+</section>
+
+<template id="logs">
+	<div>
+		@foreach (var x in Model.LogEntries.Table.Rows)
+		{
+			var timestamp = x[0]; //DateTime.Parse(x[0].ToString()).ToString("yyyy-MM-dd hh:mm:ss");
+			var severity = @x[1] switch {
+				0 => "DEBUG",
+				1 => "INFO",
+				2 => "WARNING",
+				3 => "ERROR",
+				_ => "WHAT",
+			};
+			var message = @x[2] + " " + @x[3];
+			<span>@timestamp @severity @message</span>
+		}
+	</div>
+</template>
+
+@section Scripts {
+	<link
+		rel="stylesheet"
+		data-name="/ssp-pls/monaco/vs/editor/editor.main"
+		href="/ssp-pls/monaco/vs/editor/editor.main.css"
+	/>
+	
+	<script>
+		var require = { paths: { vs: '/ssp-pls/monaco/vs' } };
+	</script>
+	<script src="/ssp-pls/monaco/vs/loader.js"></script>
+	<script src="/ssp-pls/monaco/vs/editor/editor.main.nls.js"></script>
+	<script src="/ssp-pls/monaco/vs/editor/editor.main.js"></script>
+
+	<script>
+		// Grab content from template and convert UTC dates to local time
+		const data = document.getElementById("logs").content.querySelector("div").innerText.replaceAll(/^\d+\/\d+\/\d+ \d+\:\d+\:\d+ \w+ \+00\:00/gm, function(match) { return new Date(match).toLocaleString("en-CA") }).trim();
+		// Mount monaco editor
+		let editor = monaco.editor.create(document.getElementById('editor'), {
+			value: data,
+			language: 'sb',
+			theme: "vs-dark",
+			readOnly: true,
+		});
+		// Scroll to bottom
+		editor.revealLine(editor.getModel().getLineCount());
+		// Ensure responsive to window resizing
+		window.onresize = function () {
+			if (editor) {
+				editor.layout();
+			}
+		};
+	</script>
+}

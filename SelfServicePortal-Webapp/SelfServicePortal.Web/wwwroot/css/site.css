@@ -1,0 +1,11 @@
+﻿body .checkbox input[type=checkbox],
+.checkbox-inline input[type=checkbox],
+.radio input[type=radio],
+.radio-inline input[type=radio] {
+  /* fix WET being stupid whe not using implicit (parent-child) label relationships */
+  margin-left: unset;
+}
+
+.validation-summary-valid {
+  display: none;
+}

@@ -1,0 +1,15 @@
+@model string
+<button id="my-submit" type="submit" class="btn btn-primary mrgn-bttm-md">@Localizer["Submit"]</button>
+<script>
+	window.addEventListener("load", ()=>{
+		const btn = document.querySelector("#@Model #my-submit");
+		document.querySelector("#@Model").addEventListener("submit", e => {
+			btn.setAttribute("disabled", true);
+			btn.innerText = "@Localizer["Submitting"]"
+			setTimeout(() => {
+				btn.removeAttribute("disabled");
+				btn.innerText = "@Localizer["Submit"]"
+			}, 10000);
+		});
+	});
+</script>

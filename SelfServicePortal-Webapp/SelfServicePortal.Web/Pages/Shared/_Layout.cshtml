@@ -1,0 +1,103 @@
+﻿@* Grab current language and the "opposite" language for the language button *@
+@{
+    string currentCulture = Context.Request.GetCulture();
+    string flippedCultureValue = currentCulture == "en" ? "fr" : "en";
+    string flippedCultureName = currentCulture == "en" ? "Français" : "English";
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture">
+
+<head>
+    @* Metadata *@
+    <meta http-equiv="content-language" content="@currentCulture-CA" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    @* Set page title *@
+    <title>@ViewData["Title"] - @Localizer["AppName"]</title>
+
+    @* Load site styles *@
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    @* WET CDTS *@
+    <script src="https://cdts.service.canada.ca/app/cls/WET/gcintranet/v4_0_45/cdts/compiled/soyutils.js"></script>
+    <script src="https://cdts.service.canada.ca/app/cls/WET/gcintranet/v4_0_45/cdts/compiled/wet-@(currentCulture).js"></script>
+
+
+    <script>
+        document.write(wet.builder.refTop({}));
+    </script>
+
+    @* Configure WET apptop *@
+    <script>
+        let appTop = {
+            appName: [{ text: "@Localizer["AppName"]", href: "@Url.PageSameCulture("/Index")" }],
+            lngLinks: [
+                {
+                    lang: "@flippedCultureValue",
+                    href: window.location.pathname.replace(/^\/(ssp-pls\/)?\w+\/?(.*)$/, "/$1" + "@(flippedCultureValue)" + "/$2"),
+                    text: "@flippedCultureName",
+                },
+            ],
+            breadcrumbs: [
+                {
+                    title: "@Localizer["Breadcrumb.Home"]",
+                    href: "@Url.PageSameCulture("/Index")",
+                },
+            ]
+        };
+    </script>
+
+    @* Add signin/signout buttons *@
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <script>
+            appTop.signOut = [{ href: "@Url.Action( "SignOut", null, new { area = "MicrosoftIdentity", controller = "Account" } )" }];
+        </script>
+    }
+    else
+    {
+        <script>
+            appTop.signIn = [{ href: "@Url.Action( "SignIn", null, new { area = "MicrosoftIdentity", controller = "Account" } )" }];
+        </script>
+    }
+
+    @* Add per-page apptop config *@
+    @await RenderSectionAsync("AppTop", required: false)
+</head>
+
+<body>
+    @* WET header *@
+    <div id="def-top"></div>
+    <script>
+        var defTop = document.getElementById("def-top");
+        defTop.innerHTML = wet.builder.appTop(appTop);
+    </script>
+
+    @* Render main body *@
+    @* col-md-9 col-md-push-3 *@
+    <main role="main" property="mainContentOfPage" class="@(ViewData["ContainerClass"]??"container")">
+        @RenderBody()
+    </main>
+    @* Load site scripts *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+
+    @* WET footer display *@
+    <footer id="def-footer"></footer>
+    <script>
+        var defFooter = document.getElementById("def-footer");
+        defFooter.innerHTML = wet.builder.footer({});
+    </script>
+
+    @* WET footer scripts *@
+    <script>
+        document.write(wet.builder.refFooter({}));
+    </script>
+    
+    @* Render scripts *@
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

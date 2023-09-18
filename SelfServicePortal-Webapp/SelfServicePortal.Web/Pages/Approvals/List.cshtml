@@ -1,0 +1,61 @@
+@page
+@model ListModel
+
+@{
+	ViewData["ContainerClass"] = "mrgn-lft-lg mrgn-rght-lg";
+	ViewData["Title"] = @Localizer["Header"];
+}
+
+<section>
+	<h1>@Localizer["Header"]</h1>
+	<form id="approvals" method="POST">
+		<table class="table table-striped">
+			<colgroup>
+				<col span="1" style="width:20%">
+				<col span="1" style="width:20%">
+				<col span="1" style="width:55%">
+				<col span="1" style="width:5%">
+			</colgroup>
+			<thead>
+				<tr>
+					<th scope="col">@Localizer["Field-Date"]</th>
+					<th scope="col">@Localizer["Field-Submitter"]</th>
+					<th scope="col">@Localizer["Field-Message"]</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var workflowRequest in Model.Requests)
+				{
+					<tr>
+						<td>@(DateTime.Parse(workflowRequest.TargetRowKey).ToString("dddd, dd MMMM yyyy H:mm tt"))</td>
+						<td class="clip">@workflowRequest.TargetPartitionKey</td>
+						<td><pre>@workflowRequest.Message</pre></td>
+						<td>
+							<input type="submit"
+								name="buttonname"
+								value="@Localizer["Button-Approve"]"
+								asp-page-handler="ApprovalResult"
+								asp-route-MessageId="@workflowRequest.MessageId"
+								asp-route-PopReceipt="@workflowRequest.PopReceipt"
+								asp-route-TargetPartitionKey="@workflowRequest.TargetPartitionKey"
+								asp-route-TargetRowKey="@workflowRequest.TargetRowKey"
+								asp-route-Approved="@true"
+								class="btn btn-block btn-default">
+							<input
+								type="submit"
+								name="buttonname"
+								value="@Localizer["Button-Deny"]"
+								asp-page-handler="ApprovalResult"
+								asp-route-MessageId="@workflowRequest.MessageId"
+								asp-route-PopReceipt="@workflowRequest.PopReceipt"
+								asp-route-TargetPartitionKey="@workflowRequest.TargetPartitionKey"
+								asp-route-TargetRowKey="@workflowRequest.TargetRowKey"
+								asp-route-Approved="@false"
+								class="btn btn-block btn-default">
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</form>
+</section>
